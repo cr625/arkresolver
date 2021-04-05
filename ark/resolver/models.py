@@ -2,6 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models.deletion import PROTECT
+from django.urls import reverse
+
+
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset().filter(status=3)
 
 
 class ARK(models.Model):
@@ -33,11 +39,18 @@ class ARK(models.Model):
 
     status = models.IntegerField(default=0, choices=Status.choices)
 
+    def get_absolute_url(self):
+        return(reverse('resolver:ark_detail', args=[self.naan, self.shoulder, self.ark_id]))
+
     def __str__(self):
         return 'ark:/{}/{}{}'.format(self.naan, self.shoulder, self.ark_id)
 
     class Meta:
         ordering = ('naan', 'shoulder', 'ark_id')
+
+    # model managers
+    objects = models.manager()
+    published = PublishedManager()
 
 
 class KernelMetadatum(models.Model):  # https://dublincore.org/groups/kernel/spec/
