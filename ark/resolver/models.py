@@ -8,12 +8,12 @@ class ARK(models.Model):
     ark_id = models.CharField(max_length=200, unique=True)
     shoulder = models.CharField(max_length=10, default='a1')
     NAAN_IDS = [
-        ('MRC', '13183'),
-        ('Library', '87918'),
-        ('example', '12345'),
-        ('term', '99152'),
-        ('agent', 'agent'),
-        ('test', '99999'),
+        ('13183', 'MRC'),
+        ('87918', 'Library'),
+        ('12345', 'example'),
+        ('99152', 'term'),
+        ('99166', 'agent'),
+        ('99999', 'test'),
     ]
     naan = models.CharField(max_length=10, choices=NAAN_IDS, default='MRC')
     target_uri = models.URLField(blank=True, max_length=255)
@@ -23,6 +23,7 @@ class ARK(models.Model):
     author = models.ForeignKey(User, default='User', on_delete=PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
+    format = models.CharField(blank=True, max_length=255)
 
     class Status(models.IntegerChoices):
         UNAVAILABLE = 0
