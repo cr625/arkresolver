@@ -49,7 +49,7 @@ class ARK(models.Model):
         ordering = ('naan', 'shoulder', 'ark_id')
 
     # model managers
-    objects = models.manager()
+    objects = models.Manager()
     published = PublishedManager()
 
 

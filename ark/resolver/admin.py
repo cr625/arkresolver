@@ -8,5 +8,5 @@ class ARKAdmin(admin.ModelAdmin):
                     'title', 'author', 'created')
     list_filter = ('naan', 'status', 'collection', 'created')
     search_fields = ('title', 'ark_id')
-    raw_id_fields = ('collection')
+    #raw_id_fields = ('collection')
     ordering = ('naan', 'ark_id')
