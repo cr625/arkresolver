@@ -3,6 +3,6 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('resolver/', include('resolver.urls', namespace='resolver')),
+    path("admin/", admin.site.urls),
+    path("c1/", include("resolver.urls", namespace="resolver")),
 ]

@@ -3,8 +3,32 @@
 {% block title %}List of ARKs{% endblock %}
 
 {% block content %}
-    <h1>ARKs</h1>
-    {% for ark in arks %}
-        <h2> <a href="{{ post.get_absolute_url }}">{{ ark.title }}</a></h2>
-    {% endfor %}
+<div class="card w-75 mt-5">
+    <div class="card-body">
+        <h5 class="card-title">ARKs</h5>
+        <table class="table-sm">
+            <thead>
+                <tr>
+                    <th>ark</th>
+                    <th>title</th>
+                    <th>created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ark in arks %}
+                <tr>
+                    <td>
+                        <a href="{{ark.get_absolute_url}}">{{ark}}</a>
+                    <td>
+                        {{ark.title}}
+                    </td>
+                    <td>
+                        {{ark.created}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

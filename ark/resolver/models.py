@@ -7,15 +7,17 @@ from django.urls import reverse
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super(
-            PublishedManager, self
-        ).get_queryset()  # .filter(status=3 for published)
+        return super(PublishedManager, self).get_queryset().filter(status="PUBLISHED")
 
 
 class ARK(models.Model):
     id = models.AutoField(primary_key=True)  # change this to ark later
-    ark_id = models.CharField(max_length=200, unique=True)
-    shoulder = models.CharField(max_length=10, default="a1")
+    ark_id = models.CharField(
+        max_length=200, unique=True
+    )  # Check the Meta constraints below
+    shoulder = models.CharField(max_length=10, default="c1")
+    # Each orginization should have its own NAAN get one here: https://arks.org/about/getting-started-implementing-arks/
+    # TODO: add an option to specify in config
     NAAN_IDS = [
         ("13183", "MRC"),
         ("87918", "Library"),
@@ -26,32 +28,35 @@ class ARK(models.Model):
     ]
     naan = models.CharField(max_length=10, choices=NAAN_IDS, default="MRC")
     target_uri = models.URLField(blank=True, max_length=255)
+    archive_uri = models.URLField(blank=True, max_length=255)
     collection = models.CharField(max_length=200, default="Drexel Web")
     title = models.CharField(blank=True, max_length=255)
-    notes = models.TextField(blank=True)
+    description = models.TextField(blank=True)
     author = models.ForeignKey(User, default="User", on_delete=PROTECT)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    format = models.CharField(blank=True, max_length=255)
+    StatusType = models.TextChoices("Status", "AVAILABLE RESERVED PUBLIC PUBLISHED")
+    status = models.CharField(
+        default="PUBLISHED", choices=StatusType.choices, max_length=10
+    )
 
-    class Status(models.IntegerChoices):
-        UNAVAILABLE = 0
-        RESERVED = 1
-        PUBLIC = 2
-        PUBLISHED = 3
-
-    status = models.IntegerField(default=0, choices=Status.choices)
-
+    # returns the canonical url for an ark detail entry
     def get_absolute_url(self):
-        return reverse(
-            "resolver:ark_detail", args=[self.naan, self.shoulder, self.ark_id]
-        )
+        return reverse("resolver:ark_detail", args=[self.ark_id])
 
+    # when the ark object is called with no arguments returns this string
     def __str__(self):
         return "ark:/{}/{}{}".format(self.naan, self.shoulder, self.ark_id)
 
     class Meta:
         ordering = ("naan", "shoulder", "ark_id")
+        # all three together should be unique in this context
+        constraints = [
+            models.UniqueConstraint(
+                fields=["naan", "shoulder", "ark_id"], name="unique_ark"
+            )
+            # condition=Q(status=3)
+        ]
 
     # model managers
     objects = models.Manager()
@@ -72,3 +77,21 @@ class KernelMetadatum(models.Model):  # https://dublincore.org/groups/kernel/spe
 
     class Meta:
         verbose_name_plural = "KernelMetadata"
+
+
+class Capture(models.Model):
+    id = models.AutoField(primary_key=True)
+    parent_ark = models.ForeignKey(
+        ARK, on_delete=models.CASCADE, related_name="capture"
+    )
+    capture_ark_id = models.CharField(max_length=200, blank=True)
+    warc = models.CharField(max_length=200)
+    manifest = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    class Meta:
+        ordering = "created"
+
+    def __str__(self):
+        return "{};{};{}".format(self.capture_ark_id, self.warc, self.manifest)
