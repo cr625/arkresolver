@@ -1,0 +1,10 @@
+{% extends "resolver/base.html" %}
+
+{% block title %}List of ARKs{% endblock %}
+
+{% block content %}
+    <h1>ARKs</h1>
+    {% for ark in arks %}
+        <h2> <a href="{{ post.get_absolute_url }}">{{ ark.title }}</a></h2>
+    {% endfor %}
+{% endblock %}

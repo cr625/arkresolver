@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <link href="{% static " css/resolver.css" %}" rel="stylesheet">
+</head>
+
+<body>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div id="sidebar">
+        <h2>CCI ARK Resolver</h2>
+        <p>This is my resolver.</p>
+    </div>
+</body>
+
+</html>
