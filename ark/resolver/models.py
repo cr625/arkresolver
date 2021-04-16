@@ -91,7 +91,7 @@ class Capture(models.Model):
     updated = models.DateField(auto_now=True)
 
     class Meta:
-        ordering = "created"
+        ordering = ("created",)
 
     def __str__(self):
         return "{};{};{}".format(self.capture_ark_id, self.warc, self.manifest)

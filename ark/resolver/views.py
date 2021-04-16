@@ -11,9 +11,9 @@ class ARKListView(ListView):
     template_name = "resolver/ark/list.html"
 
 
-def ARK_list(request):
-    arks = ARK.published.all()
-    return render(request, "resolver/ark/list.html", {"arks": arks})
+# def ARK_list(request):
+#    arks = ARK.published.all()
+#    return render(request, "resolver/ark/list.html", {"arks": arks})
 
 
 def ARK_detail(request, ark_id):
