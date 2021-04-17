@@ -4,9 +4,9 @@ from .models import ARK, Capture
 
 @admin.register(ARK)
 class ARKAdmin(admin.ModelAdmin):
-    list_display = ("naan", "ark_id", "collection", "title", "author", "created")
+    list_display = ("ark_id", "naan", "collection", "title", "author", "created")
     list_filter = ("naan", "status", "collection", "created")
-    search_fields = ("title", "ark_id")
+    search_fields = ("naan", "title", "ark_id")
     # raw_id_fields = ('collection')
     ordering = ("naan", "ark_id")
 

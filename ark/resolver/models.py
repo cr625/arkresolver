@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models.deletion import PROTECT
 from django.urls import reverse
+import uuid
 
 
 class PublishedManager(models.Manager):
@@ -12,9 +13,8 @@ class PublishedManager(models.Manager):
 
 class ARK(models.Model):
     id = models.AutoField(primary_key=True)  # change this to ark later
-    ark_id = models.CharField(
-        max_length=200, unique=True
-    )  # Check the Meta constraints below
+    # the uuid here is temporary and must eventually follow ARK betanumeric convention
+    ark_id = models.UUIDField(default=uuid.uuid1)
     shoulder = models.CharField(max_length=10, default="c1")
     # Each orginization should have its own NAAN get one here: https://arks.org/about/getting-started-implementing-arks/
     # TODO: add an option to specify in config
@@ -46,7 +46,9 @@ class ARK(models.Model):
 
     # when the ark object is called with no arguments returns this string
     def __str__(self):
-        return "ark:/{}/{}{}".format(self.naan, self.shoulder, self.ark_id)
+        trunc_arc = str(self.ark_id)
+        trunc_arc = trunc_arc[:8]
+        return "ark:/{}/{}{}".format(self.naan, self.shoulder, trunc_arc)
 
     class Meta:
         ordering = ("naan", "shoulder", "ark_id")
@@ -84,9 +86,15 @@ class Capture(models.Model):
     parent_ark = models.ForeignKey(
         ARK, on_delete=models.CASCADE, related_name="capture"
     )
-    capture_ark_id = models.CharField(max_length=200, blank=True)
-    warc = models.CharField(max_length=200)
-    manifest = models.CharField(max_length=200)
+    capture_naan = models.CharField(
+        max_length=20, default="13183"
+    )  # TODO: inherit this
+    capture_shoulder = models.CharField(
+        max_length=20, default="c1"
+    )  # TODO: inherit this
+    capture_ark_id = models.UUIDField(default=uuid.uuid1)
+    warc = models.CharField(max_length=200, blank=True)
+    manifest = models.CharField(max_length=200, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 
@@ -94,4 +102,9 @@ class Capture(models.Model):
         ordering = ("created",)
 
     def __str__(self):
-        return "{};{};{}".format(self.capture_ark_id, self.warc, self.manifest)
+        trunc_arc = str(self.capture_ark_id)
+        trunc_arc = trunc_arc[:8]
+
+        return "ark:/{}/{}{}".format(
+            self.capture_naan, self.capture_shoulder, trunc_arc
+        )
