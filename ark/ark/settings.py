@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "resolver.apps.ResolverConfig",
+    "capture.apps.CaptureConfig",
 ]
 
 MIDDLEWARE = [

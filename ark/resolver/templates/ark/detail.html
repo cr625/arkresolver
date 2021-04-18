@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}MRC Web Archives- {{ark.title}}{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-1">
+        <p class="text-end text-muted">Identifier</p>
+    </div>
+    <div class="col">
+        {{ark}}
+    </div>
+    <div class="row  mt-4">
+        <div class="col-1">
+            <p class="text-end text-muted">URI-R</p>
+        </div>
+        <div class="col">
+            {{ark.target_uri}}
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-1">
+            <p class="text-end text-muted">Title</p>
+        </div>
+        <div class="col">
+            {{ark.title}}
+        </div>
+    </div>
+    <div class="row  mt-4">
+        <div class="col-1">
+            <p class="text-end text-muted">Description</p>
+        </div>
+        <div class="col-6">
+            {{ark.description}}
+        </div>
+    </div>
+</div>
+<div class="card mt-5">
+    <div class="card-header h6">
+        {% with captures.count as total_captures %}
+
+        {{ total_captures }} capture{{ total_captures|pluralize }}
+
+        {% endwith %}
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">ARK</th>
+                    <th scope="col">WARC</th>
+                    <th scope="col">Manifest</th>
+                    <th scope="col">Difference</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {% for capture in captures %}
+                    <td>{{ capture.created }}</td>
+                    <td>{{ capture }}</td>
+                    <td>{{ capture.warc }}</td>
+                    <td>{{ capture.manifest }}</td>
+                    <td>0 %</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if new_capture %}
+<h2>Your capture has been added.</h2>
+{% else %}
+{% endif %}
+
+<div class="card mt-5">
+    <div class="card-header h6">Add Capture</div>
+    <div class="card-body">
+        <form method="POST">
+            <table class="table">
+                {{ capture_form.as_table }}
+            </table>
+            {% csrf_token %}
+            <p><input type="submit" value="Add Capture"></p>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

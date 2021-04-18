@@ -44,7 +44,7 @@ class ARK(models.Model):
     def get_absolute_url(self):
         return reverse("resolver:ark_detail", args=[self.ark_id])
 
-    # when the ark object is called with no arguments returns this string
+    # when the ark object is referenced directly returns this string
     def __str__(self):
         trunc_arc = str(self.ark_id)
         trunc_arc = trunc_arc[:8]
@@ -57,7 +57,6 @@ class ARK(models.Model):
             models.UniqueConstraint(
                 fields=["naan", "shoulder", "ark_id"], name="unique_ark"
             )
-            # condition=Q(status=3)
         ]
 
     # model managers
@@ -65,10 +64,10 @@ class ARK(models.Model):
     published = PublishedManager()
 
 
-class KernelMetadatum(models.Model):  # https://dublincore.org/groups/kernel/spec/
+# https://dublincore.org/groups/kernel/spec/
+class KernelMetadatum(models.Model):
     id = models.AutoField(primary_key=True)
     ark = models.ForeignKey(ARK, on_delete=models.CASCADE)
-    # '', about, meta, support, depositor
     ErcType = models.TextChoices("ErcType", "about meta support depositor")
     erc = models.CharField(blank=True, choices=ErcType.choices, max_length=10)
     who = models.TextField(blank=True)
@@ -84,15 +83,13 @@ class KernelMetadatum(models.Model):  # https://dublincore.org/groups/kernel/spe
 class Capture(models.Model):
     id = models.AutoField(primary_key=True)
     parent_ark = models.ForeignKey(
-        ARK, on_delete=models.CASCADE, related_name="capture"
+        ARK, on_delete=models.CASCADE, related_name="captures"
     )
-    capture_naan = models.CharField(
-        max_length=20, default="13183"
-    )  # TODO: inherit this
-    capture_shoulder = models.CharField(
-        max_length=20, default="c1"
-    )  # TODO: inherit this
+    # TODO: inherit the next two fields
+    capture_naan = models.CharField(max_length=20, default="13183")
+    capture_shoulder = models.CharField(max_length=20, default="c1")
     capture_ark_id = models.UUIDField(default=uuid.uuid1)
+    capture_uri = models.URLField(blank=True, max_length=255)
     warc = models.CharField(max_length=200, blank=True)
     manifest = models.CharField(max_length=200, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -107,4 +104,4 @@ class Capture(models.Model):
 
         return "ark:/{}/{}{}".format(
             self.capture_naan, self.capture_shoulder, trunc_arc
-        )
+        )  # so we can just refer to it as capture in the templates
