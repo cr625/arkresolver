@@ -82,14 +82,12 @@ class KernelMetadatum(models.Model):
 
 class Capture(models.Model):
     id = models.AutoField(primary_key=True)
-    parent_ark = models.ForeignKey(
-        ARK, on_delete=models.CASCADE, related_name="captures"
-    )
+    ark = models.ForeignKey(ARK, on_delete=models.CASCADE, related_name="captures")
     # TODO: inherit the next two fields
     capture_naan = models.CharField(max_length=20, default="13183")
     capture_shoulder = models.CharField(max_length=20, default="c1")
     capture_ark_id = models.UUIDField(default=uuid.uuid1)
-    capture_uri = models.URLField(blank=True, max_length=255)
+    capture_uri = models.URLField(max_length=255)
     warc = models.CharField(max_length=200, blank=True)
     manifest = models.CharField(max_length=200, blank=True)
     created = models.DateTimeField(auto_now_add=True)

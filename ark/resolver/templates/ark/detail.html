@@ -49,21 +49,24 @@
                 <tr>
                     <th scope="col">Date</th>
                     <th scope="col">ARK</th>
+                    <th scope="col">URI-R</th>
                     <th scope="col">WARC</th>
                     <th scope="col">Manifest</th>
                     <th scope="col">Difference</th>
                 </tr>
             </thead>
             <tbody>
+                {% for capture in captures %}
                 <tr>
-                    {% for capture in captures %}
+
                     <td>{{ capture.created }}</td>
                     <td>{{ capture }}</td>
+                    <td>{{ capture.capture_uri }}</td>
                     <td>{{ capture.warc }}</td>
                     <td>{{ capture.manifest }}</td>
                     <td>0 %</td>
-                    {% endfor %}
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -73,7 +76,7 @@
 {% else %}
 {% endif %}
 
-<div class="card mt-5">
+<div class="card mt-5" style="width: 30rem;">
     <div class="card-header h6">Add Capture</div>
     <div class="card-body">
         <form method="POST">
@@ -81,7 +84,7 @@
                 {{ capture_form.as_table }}
             </table>
             {% csrf_token %}
-            <p><input type="submit" value="Add Capture"></p>
+            <input type="submit" class="btn btn-primary mb-3" value="Add Capture">
         </form>
     </div>
 </div>

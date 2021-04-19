@@ -13,4 +13,4 @@ class ARKAdmin(admin.ModelAdmin):
 
 @admin.register(Capture)
 class CaptureAdmin(admin.ModelAdmin):
-    list_display = ("created", "capture_ark_id", "warc", "manifest")
+    list_display = ("capture_ark_id", "capture_uri", "warc", "manifest", "created")
