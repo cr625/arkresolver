@@ -10,11 +10,6 @@ class ARKListView(ListView):
     template_name = "ark/list.html"
 
 
-# def ARK_list(request):
-#    arks = ARK.published.all()
-#    return render(request, "resolver/ark/list.html", {"arks": arks})
-
-
 def ARK_detail(request, ark_id):
     ark = get_object_or_404(ARK, ark_id=ark_id)
     # list of captures for this ARK

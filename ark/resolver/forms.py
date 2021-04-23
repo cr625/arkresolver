@@ -5,7 +5,5 @@ from .models import Capture
 class CaptureForm(forms.ModelForm):
     class Meta:
         model = Capture
-        fields = [
-            "capture_uri",
-        ]
+        fields = ["capture_uri"]
         # fields = "__all__"
