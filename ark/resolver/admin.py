@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ARK, Capture
+from .models import ARK, KernelMetadatum, Capture
 
 
 @admin.register(ARK)
@@ -14,3 +14,7 @@ class ARKAdmin(admin.ModelAdmin):
 @admin.register(Capture)
 class CaptureAdmin(admin.ModelAdmin):
     list_display = ("capture_ark_id", "capture_uri", "warc", "manifest", "created")
+
+@admin.register(KernelMetadatum)
+class KernelMetadatumAdmin(admin.ModelAdmin):
+    ordering = ("ark",)
